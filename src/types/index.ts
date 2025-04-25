@@ -7,6 +7,7 @@ export interface User {
   email: string;
   role: UserRole;
   avatar?: string;
+  password?: string; // Added for backend use only
 }
 
 export interface Classroom {
@@ -48,4 +49,17 @@ export interface BookingStats {
   pending: number;
   rejected: number;
   cancelled: number;
+}
+
+// Backend specific interfaces
+export interface AuthResponse {
+  user: User;
+  token: string;
+}
+
+export interface EmailOptions {
+  to: string;
+  subject: string;
+  text?: string;
+  html?: string;
 }
