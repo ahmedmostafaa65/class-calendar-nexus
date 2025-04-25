@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -48,10 +47,8 @@ const BookClassroom = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   
-  // Get selected classroom from location state (if coming from dashboard)
   const preselectedClassroom = location.state?.selectedClassroom as Classroom | undefined;
   
-  // Form state
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [selectedClassroom, setSelectedClassroom] = useState<Classroom | null>(preselectedClassroom || null);
   const [startTime, setStartTime] = useState<string>("");
@@ -61,21 +58,32 @@ const BookClassroom = () => {
   const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
   const [checkedAvailability, setCheckedAvailability] = useState(false);
 
-  // Query for classrooms
   const { data: classrooms = [], isLoading } = useQuery({
     queryKey: ['classrooms'],
     queryFn: classroomsApi.getClassrooms,
   });
   
-  // Reset form when selected classroom changes
   useEffect(() => {
     if (selectedClassroom) {
       setIsAvailable(null);
       setCheckedAvailability(false);
     }
   }, [selectedClassroom, selectedDate, startTime, endTime]);
+
+  const switchToBookingTab = () => {
+    const bookingTab = document.querySelector('[data-value="booking"]') as HTMLElement;
+    if (bookingTab) {
+      bookingTab.click();
+    }
+  };
+
+  const switchToRoomsTab = () => {
+    const roomsTab = document.querySelector('[data-value="rooms"]') as HTMLElement;
+    if (roomsTab) {
+      roomsTab.click();
+    }
+  };
   
-  // Check if selected time slot is available for the classroom
   const checkAvailability = async () => {
     if (!selectedClassroom || !selectedDate || !startTime || !endTime) {
       toast({
@@ -119,7 +127,6 @@ const BookClassroom = () => {
     }
   };
   
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -215,7 +222,7 @@ const BookClassroom = () => {
             {selectedClassroom && (
               <div className="flex justify-end mt-4">
                 <Button 
-                  onClick={() => document.querySelector('[data-value="booking"]')?.click()}
+                  onClick={switchToBookingTab}
                   className="bg-booking-primary hover:bg-booking-primary/90"
                 >
                   Continue
@@ -244,7 +251,7 @@ const BookClassroom = () => {
                             variant="ghost" 
                             size="sm" 
                             className="ml-auto"
-                            onClick={() => document.querySelector('[data-value="rooms"]')?.click()}
+                            onClick={switchToRoomsTab}
                           >
                             Change
                           </Button>

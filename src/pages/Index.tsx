@@ -71,6 +71,11 @@ const Dashboard = () => {
     navigate('/book', { state: { selectedClassroom: classroom } });
   };
   
+  // Count upcoming bookings (for today)
+  const todayBookingsCount = userBookings.filter(
+    b => b.date === new Date().toISOString().split('T')[0]
+  ).length;
+  
   return (
     <MainLayout>
       <div className="space-y-8">
@@ -96,7 +101,7 @@ const Dashboard = () => {
                 {isLoadingBookings ? '...' : userBookings.length}
               </div>
               <p className="text-xs text-muted-foreground">
-                {userBookings.filter(b => b.status === 'upcoming').length} upcoming
+                {userBookings.filter(b => b.status === 'confirmed' || b.status === 'pending').length} active
               </p>
             </CardContent>
           </Card>
@@ -123,9 +128,7 @@ const Dashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {isLoadingBookings ? '...' : userBookings.filter(
-                  b => b.date === new Date().toISOString().split('T')[0]
-                ).length}
+                {isLoadingBookings ? '...' : todayBookingsCount}
               </div>
               <p className="text-xs text-muted-foreground">
                 For {new Date().toLocaleDateString()}
