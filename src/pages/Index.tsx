@@ -1,14 +1,210 @@
-// Update this page (the content is just a fallback if you fail to update the page)
 
-const Index = () => {
+import React, { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Navigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { MainLayout } from '@/components/layout/MainLayout';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { BookingCard } from '@/components/BookingCard';
+import { ClassroomCard } from '@/components/ClassroomCard';
+import { EmptyState } from '@/components/EmptyState';
+import { bookingsApi, classroomsApi } from '@/services/api';
+import { Booking, Classroom } from '@/types';
+import { CalendarDays, BookOpen, Building, Plus } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
+
+const Dashboard = () => {
+  const { user, isAdmin } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  
+  // Redirect to admin dashboard if user is admin
+  if (isAdmin) {
+    return <Navigate to="/admin" />;
+  }
+  
+  // Redirect to login if not authenticated
+  if (!user) {
+    return <Navigate to="/login" />;
+  }
+  
+  // Fetch user's bookings
+  const { data: userBookings = [], isLoading: isLoadingBookings } = useQuery({
+    queryKey: ['userBookings', user.id],
+    queryFn: () => bookingsApi.getUserBookings(user.id),
+  });
+  
+  // Fetch classrooms
+  const { data: classrooms = [], isLoading: isLoadingClassrooms } = useQuery({
+    queryKey: ['classrooms'],
+    queryFn: classroomsApi.getClassrooms,
+  });
+  
+  // Filter upcoming bookings (not cancelled or rejected)
+  const upcomingBookings = userBookings.filter(
+    booking => booking.status !== 'cancelled' && booking.status !== 'rejected'
+  ).slice(0, 3);
+  
+  // Handle booking cancellation
+  const handleCancelBooking = async (booking: Booking) => {
+    try {
+      await bookingsApi.cancelBooking(booking.id);
+      toast({
+        title: 'Booking cancelled',
+        description: `Your booking for ${booking.classroomName} has been cancelled.`,
+      });
+      // Refetch bookings
+      // In a real app with React Query, this would be handled by invalidating the query
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to cancel booking. Please try again.',
+        variant: 'destructive',
+      });
+    }
+  };
+  
+  // Navigate to book a classroom
+  const handleBookClassroom = (classroom: Classroom) => {
+    navigate('/book', { state: { selectedClassroom: classroom } });
+  };
+  
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <MainLayout>
+      <div className="space-y-8">
+        <div className="flex items-center justify-between">
+          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+          <Button 
+            onClick={() => navigate('/book')}
+            className="bg-booking-primary hover:bg-booking-primary/90"
+          >
+            <Plus className="mr-2 h-4 w-4" /> New Booking
+          </Button>
+        </div>
+        
+        {/* Quick stats */}
+        <div className="grid gap-4 md:grid-cols-3">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">My Bookings</CardTitle>
+              <BookOpen className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {isLoadingBookings ? '...' : userBookings.length}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {userBookings.filter(b => b.status === 'upcoming').length} upcoming
+              </p>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Available Classrooms</CardTitle>
+              <Building className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {isLoadingClassrooms ? '...' : classrooms.filter(c => c.available).length}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Out of {classrooms.length} total classrooms
+              </p>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Today's Bookings</CardTitle>
+              <CalendarDays className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {isLoadingBookings ? '...' : userBookings.filter(
+                  b => b.date === new Date().toISOString().split('T')[0]
+                ).length}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                For {new Date().toLocaleDateString()}
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+        
+        {/* Upcoming bookings */}
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold tracking-tight">Upcoming Bookings</h2>
+            <Button variant="outline" size="sm" onClick={() => navigate('/bookings')}>
+              View all
+            </Button>
+          </div>
+          
+          {isLoadingBookings ? (
+            <div className="grid gap-4 md:grid-cols-3">
+              {[1, 2, 3].map((i) => (
+                <Card key={i} className="h-[180px] animate-pulse bg-muted" />
+              ))}
+            </div>
+          ) : upcomingBookings.length > 0 ? (
+            <div className="grid gap-4 md:grid-cols-3">
+              {upcomingBookings.map((booking) => (
+                <BookingCard
+                  key={booking.id}
+                  booking={booking}
+                  onCancel={handleCancelBooking}
+                />
+              ))}
+            </div>
+          ) : (
+            <EmptyState
+              title="No upcoming bookings"
+              description="You don't have any upcoming bookings. Book a classroom now!"
+              action={{
+                label: 'Book a Classroom',
+                onClick: () => navigate('/book'),
+              }}
+            />
+          )}
+        </div>
+        
+        {/* Available classrooms */}
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold tracking-tight">Available Classrooms</h2>
+            <Button variant="outline" size="sm" onClick={() => navigate('/book')}>
+              View all
+            </Button>
+          </div>
+          
+          {isLoadingClassrooms ? (
+            <div className="grid gap-4 md:grid-cols-3">
+              {[1, 2, 3].map((i) => (
+                <Card key={i} className="h-[220px] animate-pulse bg-muted" />
+              ))}
+            </div>
+          ) : (
+            <div className="grid gap-4 md:grid-cols-3">
+              {classrooms
+                .filter(c => c.available)
+                .slice(0, 3)
+                .map((classroom) => (
+                  <ClassroomCard
+                    key={classroom.id}
+                    classroom={classroom}
+                    onBook={handleBookClassroom}
+                  />
+                ))
+              }
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </MainLayout>
   );
 };
 
-export default Index;
+export default Dashboard;

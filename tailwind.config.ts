@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,20 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// Custom colors for our booking app
+				booking: {
+					primary: '#4f46e5',
+					secondary: '#8b5cf6',
+					accent: '#a855f7',
+					success: '#22c55e',
+					warning: '#f59e0b',
+					error: '#ef4444',
+					pending: '#f97316',
+					available: '#10b981',
+					booked: '#f43f5e',
+					light: '#f1f5f9',
+					dark: '#1e293b'
 				}
 			},
 			borderRadius: {
