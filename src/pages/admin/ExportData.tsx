@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
 import { format, subDays, startOfMonth, endOfMonth } from 'date-fns';
-import { Calendar as CalendarIcon, Download, FileText, Table as TableIcon } from 'lucide-react';
+import { Calendar as CalendarIcon, Download, FileText, Loader2, Table as TableIcon } from 'lucide-react';
 import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
