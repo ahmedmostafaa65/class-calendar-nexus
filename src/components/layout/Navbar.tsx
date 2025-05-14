@@ -56,20 +56,20 @@ export const Navbar = () => {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link to="/profile" className="flex items-center cursor-pointer w-full">
+                  <Link to="/profile" className="flex items-center w-full">
                     <User className="mr-2 h-4 w-4" />
                     <span>Profile</span>
                   </Link>
                 </DropdownMenuItem>
                 {isAdmin && (
                   <DropdownMenuItem asChild>
-                    <Link to="/admin" className="flex items-center cursor-pointer w-full">
+                    <Link to="/admin" className="flex items-center w-full">
                       <span>Admin Dashboard</span>
                     </Link>
                   </DropdownMenuItem>
                 )}
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => logout()} className="cursor-pointer">
+                <DropdownMenuItem onClick={() => logout()} className="flex items-center cursor-pointer">
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Log out</span>
                 </DropdownMenuItem>
