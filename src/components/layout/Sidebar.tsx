@@ -43,8 +43,8 @@ export const Sidebar = () => {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-40 w-64 bg-white border-r transform transition-transform duration-200 ease-in-out",
-          isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+          "fixed inset-y-0 left-0 z-30 w-64 bg-white border-r transform transition-transform duration-200 ease-in-out md:translate-x-0",
+          isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
         <div className="flex flex-col h-full">
@@ -256,6 +256,11 @@ export const Sidebar = () => {
           )}
         </div>
       </aside>
+
+      {/* Content Spacer - ensures content isn't hidden behind sidebar on larger screens */}
+      <div className="md:pl-64 transition-all duration-200">
+        {/* This is just a spacer div that pushes content away from the sidebar */}
+      </div>
     </>
   );
 };
