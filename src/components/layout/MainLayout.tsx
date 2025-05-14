@@ -28,7 +28,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     <TooltipProvider>
       <div className="min-h-screen flex flex-col bg-slate-50">
         <Navbar />
-        <div className="flex flex-1 pt-16"> {/* Add pt-16 to account for fixed navbar height */}
+        <div className="flex flex-1 mt-16"> {/* Changed pt-16 to mt-16 to create proper spacing */}
           <Sidebar />
           <div className={cn(
             "flex-1 px-4 py-6 md:px-6 lg:px-8 max-w-screen-2xl mx-auto w-full"
