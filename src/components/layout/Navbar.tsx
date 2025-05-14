@@ -1,18 +1,25 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from '@/contexts/AuthContext';
 import { Calendar, LogOut, User } from 'lucide-react';
+
 export const Navbar = () => {
-  const {
-    user,
-    logout,
-    isAdmin
-  } = useAuth();
-  return <header className="sticky top-0 z-30 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 w-16 items-center justify-between">
+  const { user, logout, isAdmin } = useAuth();
+
+  return (
+    <header className="sticky top-0 z-30 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-2">
           <Calendar className="h-6 w-6 text-primary" />
           <Link to="/" className="text-xl font-semibold tracking-tight">
@@ -21,14 +28,17 @@ export const Navbar = () => {
         </div>
 
         <div className="flex items-center gap-2">
-          {!user ? <div className="flex gap-2">
+          {!user ? (
+            <div className="flex gap-2">
               <Button variant="ghost" asChild>
                 <Link to="/login">Login</Link>
               </Button>
               <Button asChild>
                 <Link to="/register">Sign Up</Link>
               </Button>
-            </div> : <DropdownMenu>
+            </div>
+          ) : (
+            <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                   <Avatar className="h-10 w-10">
@@ -51,19 +61,23 @@ export const Navbar = () => {
                     <span>Profile</span>
                   </Link>
                 </DropdownMenuItem>
-                {isAdmin && <DropdownMenuItem asChild>
+                {isAdmin && (
+                  <DropdownMenuItem asChild>
                     <Link to="/admin" className="flex items-center w-full">
                       <span>Admin Dashboard</span>
                     </Link>
-                  </DropdownMenuItem>}
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => logout()} className="flex items-center cursor-pointer">
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Log out</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
-            </DropdownMenu>}
+            </DropdownMenu>
+          )}
         </div>
       </div>
-    </header>;
+    </header>
+  );
 };
