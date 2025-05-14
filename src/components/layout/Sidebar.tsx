@@ -148,7 +148,7 @@ export const Sidebar = () => {
                   <>
                     <div className="pt-4 pb-2">
                       <div className="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                        Admin
+                        ADMIN
                       </div>
                     </div>
                     <Link
@@ -196,7 +196,7 @@ export const Sidebar = () => {
 
                 <div className="pt-4 pb-2">
                   <div className="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                    General
+                    GENERAL
                   </div>
                 </div>
                 <Link
