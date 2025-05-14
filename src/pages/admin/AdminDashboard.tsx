@@ -23,34 +23,31 @@ const AdminDashboard = () => {
   const { user, isAdmin } = useAuth();
   const navigate = useNavigate();
   
-  // Redirect if not admin
-  if (!isAdmin) {
-    return <Navigate to="/" />;
-  }
-  
-  // Fetch users
+  // Fetch all data regardless of admin status - we'll handle redirect after
   const { data: users = [] } = useQuery({
     queryKey: ['users'],
     queryFn: usersApi.getUsers,
   });
   
-  // Fetch classrooms
   const { data: classrooms = [] } = useQuery({
     queryKey: ['classrooms'],
     queryFn: classroomsApi.getClassrooms,
   });
   
-  // Fetch bookings
   const { data: bookings = [] } = useQuery({
     queryKey: ['bookings'],
     queryFn: bookingsApi.getBookings,
   });
   
-  // Fetch booking stats
   const { data: bookingStats } = useQuery({
     queryKey: ['bookingStats'],
     queryFn: bookingsApi.getBookingStats,
   });
+  
+  // Redirect if not admin - moved after all hooks are called
+  if (!isAdmin) {
+    return <Navigate to="/" />;
+  }
   
   // Prepare data for pie chart
   const pieData = bookingStats ? [
