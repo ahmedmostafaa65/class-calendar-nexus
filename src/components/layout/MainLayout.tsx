@@ -28,10 +28,10 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     <TooltipProvider>
       <div className="min-h-screen flex flex-col bg-slate-50">
         <Navbar />
-        <div className="flex flex-1 mt-16">
+        <div className="flex flex-1 mt-14">
           <Sidebar />
           <div className={cn(
-            "flex-1 px-4 py-6 md:px-6 lg:px-8 max-w-screen-2xl mx-auto w-full md:ml-64"
+            "flex-1 px-4 py-4 md:px-6 lg:px-8 max-w-screen-2xl mx-auto w-full md:ml-56"
           )}>
             {children}
           </div>
